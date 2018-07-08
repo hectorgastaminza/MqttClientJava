@@ -1,10 +1,19 @@
 import java.util.Scanner;
 
+/**
+ * 
+ * @author hecto
+ *
+ */
 public class Main {
 
 	public static void main(String[] args) {
 		Scanner myScanner = new Scanner(System.in);
-		Listener myListener = null;
+		final String topic = "temperature";
+		MqttConnectionConfiguration myConfiguration = new MqttConnectionConfiguration();
+		MqttListener myListener = null;
+		MqttPublisher myPublisher = null;
+
 		int option = 99;
 		int value = 30;
 		
@@ -23,17 +32,22 @@ public class Main {
 			switch (option) {
 			// Publish
 			case 1:
-				Publisher.launch(new String[] {String.valueOf(value++)});
+				if(myPublisher == null)
+				{
+					myPublisher = new MqttPublisher(myConfiguration);
+				}
+				myPublisher.publish(topic, String.valueOf(value++));
 				break;
 			// Listener
 			case 2:
 				if(myListener == null)
 				{
-					myListener = Listener.launch(null);
+					myListener = new MqttListener(topic, myConfiguration, new MqttMessageReceiver());
 				}
 				break;
 			}
 		}		
+		System.out.println("Application end.");
 	}
 
 }

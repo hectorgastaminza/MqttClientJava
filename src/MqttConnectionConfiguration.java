@@ -10,6 +10,10 @@ public class MqttConnectionConfiguration {
 	private String password = "67b9ee69";
 	/* Optional */
 	private String rootTopic = "/hectorgastaminza@gmail.com/";
+	/* Quality of service */
+	private int qos = 0;
+	/* Clean session */
+	private boolean cleanSession = true;
 
 	public String getUsername() {
 		return userId;
@@ -25,5 +29,13 @@ public class MqttConnectionConfiguration {
 	
 	public String getRootTopic() {
 		return rootTopic;
+	}
+	
+	public int getQOS() {
+		return qos;
+	}
+	
+	public boolean getCleanSession() {
+		return cleanSession;
 	}
 }
