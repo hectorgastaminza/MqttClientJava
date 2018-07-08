@@ -29,16 +29,12 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
  */
 public class Listener implements MqttCallback {
 
-	/** The broker url. */
-	private static final String brokerUrl = "tcp://test.mosquitto.org:1883";
-	/** The client id. */
-	private static final String clientId = "JavaSample2";
-	/** The topic. */
-	private static final String topic = "Temperature";
-	
+	private static final String topic = "temperature";
+	private String clientId; 
 	MemoryPersistence persistence;
 	MqttClient sampleClient;
-	MqttConnectOptions connOpts;	
+	MqttConnectOptions connOpts;
+	MqttConnectionConfiguration myConfiguration;
 	
 
 	/**
@@ -63,15 +59,19 @@ public class Listener implements MqttCallback {
 	 */
 	public void subscribe(String topic) {
 		persistence = new MemoryPersistence();
-
+		myConfiguration = new MqttConnectionConfiguration();
+		topic = myConfiguration.getRootTopic() + topic;
+		
 		try {
-			sampleClient = new MqttClient(brokerUrl, clientId, persistence);
+			clientId = MqttClient.generateClientId();
+			sampleClient = new MqttClient(myConfiguration.getBrokerURL(), clientId, persistence);
 			connOpts = new MqttConnectOptions();
 			connOpts.setCleanSession(true);
-
+			connOpts.setUserName(myConfiguration.getUsername());
+			connOpts.setPassword(myConfiguration.getPassword());
+			
 			System.out.println("checking");
 
-			System.out.println("Mqtt Connecting to broker: " + brokerUrl);
 			sampleClient.connect(connOpts);
 			System.out.println("Mqtt Connected");
 

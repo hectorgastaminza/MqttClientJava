@@ -19,6 +19,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
+import java.io.*;
 
 /**
  * The Class Publisher.
@@ -32,28 +33,31 @@ public class Publisher {
 	 * @param args the arguments
 	 */
 	public static void launch(String[] args) {
-		String topic = "Temperature";
+		String topic = "temperature";
 		String content = (args == null) ? "32" : args[0];
-		int qos = 2;
-		String broker = "tcp://test.mosquitto.org:1883";
-		String clientId = "JavaSample1";
+		int qos = 0;//2;
+		String clientId;
 		MemoryPersistence persistence = new MemoryPersistence();
+		MqttConnectionConfiguration myConfiguration = new MqttConnectionConfiguration();
+		topic = myConfiguration.getRootTopic() + topic;
 
 		try {
-
-			MqttClient sampleClient = new MqttClient(broker, clientId, persistence);
+			clientId = MqttClient.generateClientId();
+			MqttClient sampleClient = new MqttClient(myConfiguration.getBrokerURL(), clientId, persistence);
 			MqttConnectOptions connOpts = new MqttConnectOptions();
 			connOpts.setCleanSession(true);
-			System.out.println("Connecting to broker: " + broker);
+			connOpts.setUserName(myConfiguration.getUsername());
+			connOpts.setPassword(myConfiguration.getPassword());	
 			sampleClient.connect(connOpts);
-			System.out.println("Connected");
-			System.out.println("Publishing message: " + content);
-			MqttMessage message = new MqttMessage(content.getBytes());
-			message.setQos(qos);
-			sampleClient.publish(topic, message);
-			System.out.println("Message published");
-			sampleClient.disconnect();
-			System.out.println("Disconnected");
+			if(sampleClient.isConnected())
+			{
+				sampleClient.publish(topic, content.getBytes(), qos, true);
+				sampleClient.disconnect();
+			}
+			else
+			{
+				System.out.println("Client is not connect");
+			}
 		} catch (MqttException me) {
 			System.out.println("reason " + me.getReasonCode());
 			System.out.println("msg " + me.getMessage());
