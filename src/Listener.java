@@ -32,7 +32,7 @@ public class Listener implements MqttCallback {
 	/** The broker url. */
 	private static final String brokerUrl = "tcp://test.mosquitto.org:1883";
 	/** The client id. */
-	private static final String clientId = "JavaSample";
+	private static final String clientId = "JavaSample2";
 	/** The topic. */
 	private static final String topic = "Temperature";
 	

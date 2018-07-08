@@ -36,7 +36,7 @@ public class Publisher {
 		String content = (args == null) ? "32" : args[0];
 		int qos = 2;
 		String broker = "tcp://test.mosquitto.org:1883";
-		String clientId = "JavaSample";
+		String clientId = "JavaSample1";
 		MemoryPersistence persistence = new MemoryPersistence();
 
 		try {
